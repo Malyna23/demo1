@@ -48,7 +48,7 @@ servers=[
       end
   end
 
-  N = 0
+  N = 2
   (1..N).each do |machine_id|
     config.vm.define "webserv#{machine_id}" do |machineweb|
       machineweb.vm.box = "centos/7"
@@ -67,5 +67,9 @@ servers=[
     balancer.vm.network "private_network", ip: "192.168.56.2"
     balancer.vm.network "public_network"
     balancer.vm.provision "shell", path: "scenario_haproxy.sh"
+    (1..N).each do |n|
+      IPBALANCER="192.168.56.#{10+n}"
+      balancer.vm.provision "shell", path: "scenario_ip.sh", :args => [IPBALANCER]
+    end
   end
 end

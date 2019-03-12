@@ -44,6 +44,18 @@ defaults
     timeout check           10s
     maxconn                 3000
 
+listen stats *:8080
+ mode http
+ stats enable
+ stats realm LoadBalancer_statistics
+ stats scope app
+ stats scope https-web
+ stats scope http-app
+ stats scope mysql-proxy
+ stats auth admin:adminpassword
+ stats uri /stats
+
+
 
 frontend  main 192.168.56.2:80
     acl url_static       path_beg       -i /static /images /javascript /stylesheets
@@ -60,8 +72,6 @@ backend app
     balance     roundrobin
     server  app1 192.168.56.3:80 check
     server  app2 192.168.56.6:80 check
-    server  app3 192.168.56.11:80 check
-    server  app4 192.168.56.12:80 check
 EOF
 sudo systemctl restart haproxy
 
@@ -69,4 +79,8 @@ sudo systemctl restart haproxy
 sudo systemctl start firewalld
 sudo systemctl enable firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=http 
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='
+  rule family="ipv4"
+  source address="192.168.56.0/24"
+  port protocol="tcp" port="8080" accept'
 sudo firewall-cmd --reload

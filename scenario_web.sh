@@ -12,7 +12,7 @@ sudo yum -y install epel-release
 sudo yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 sudo yum-config-manager --enable remi-php72
 sudo yum -y update
-sudo yum -y install php php-mysql php-xml php-xmlrpc php-gd php-intl php-mbstring php-soap php-zip php-opcache php-cli php-pgsql php-pdo php-fileinfo php-curl php-common php-fpm php-redis
+sudo yum -y install php php-xml php-xmlrpc php-gd php-intl php-mbstring php-soap php-zip php-opcache php-cli php-pgsql php-pdo php-fileinfo php-curl php-common php-fpm php-redis
 sudo systemctl restart httpd.service
 sudo sed -i -e "s/session.save_handler = files/session.save_handler = redis/g" /etc/php.ini
 
@@ -66,7 +66,7 @@ EOF
 sudo systemctl start firewalld.service
 sudo firewall-cmd --permanent --zone=public --add-rich-rule='
   rule family="ipv4"
-  source address="192.168.56.0/24"
+  source address="192.168.56.2/32"
   port protocol="tcp" port="80" accept'
 sudo firewall-cmd --reload
 
